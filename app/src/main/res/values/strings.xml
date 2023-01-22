@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Movies</string>
+    <string name="the_movie_image">the movie image</string>
+    <string name="previous_button">previous Button</string>
+    <string name="next_button">Next Button</string>
+    <string name="cast">Cast</string>
+    <string name="all">ALL</string>
+    <string name="error_happened">error happened</string>
+    <string name="loading">Loading..</string>
+    <string name="search">Search</string>
+    <string name="warning_image">warning image</string>
+    <string name="load_again">load again</string>
+    <string name="no_result_found_try_searching_again">No result found, try searching again</string>
+</resources>
