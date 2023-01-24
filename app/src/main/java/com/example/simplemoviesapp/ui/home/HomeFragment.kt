@@ -47,6 +47,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.pager.adapter = null
         _binding = null
     }
 
@@ -86,7 +87,7 @@ class HomeFragment : Fragment() {
      */
     private fun handleGenreList(genres: ArrayList<Genre>) {
         if (genres.isNotEmpty()) {
-            swipePagerAdapter = SwipePagerAdapter(this)
+            swipePagerAdapter = SwipePagerAdapter(childFragmentManager,viewLifecycleOwner.lifecycle)
 
             swipePagerAdapter.setList(genres)
 

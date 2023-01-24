@@ -3,11 +3,13 @@ package com.example.simplemoviesapp.ui.movies_list.adapters
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.simplemoviesapp.model.data_classes.genre_response.Genre
 import com.example.simplemoviesapp.ui.movies_list.MoviesListFragment
 
-class SwipePagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class SwipePagerAdapter(manager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(manager,lifecycle) {
 
     private var genres: ArrayList<Genre> = ArrayList()
 

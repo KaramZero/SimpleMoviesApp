@@ -33,7 +33,6 @@ class MoviesListFragment : Fragment(), ListFragmentCommunicator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        moviesAdapter = MoviesAdapter(requireContext(), this)
 
         //getting the genre id from arguments and calling the viewModel to get MoviesList with it.
         arguments?.takeIf { it.containsKey("genre_id") }?.apply {
@@ -59,6 +58,8 @@ class MoviesListFragment : Fragment(), ListFragmentCommunicator {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        moviesAdapter = MoviesAdapter(requireContext(), this)
+
         binding.moviesRecycleView.adapter = moviesAdapter
         binding.moviesRecycleView.addOnScrollListener(recycleViewListener)
 
