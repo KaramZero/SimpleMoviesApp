@@ -4,7 +4,6 @@ import androidx.room.TypeConverter
 import com.example.example.Posters
 import com.example.simplemoviesapp.model.data_classes.genre_response.Genre
 import com.example.simplemoviesapp.model.data_classes.movie_credits_response.Cast
-import com.example.simplemoviesapp.model.data_classes.movies_list_response.Movie
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -19,18 +18,6 @@ object Converters {
 
     @TypeConverter
     fun genresToString(list: ArrayList<Genre?>?): String {
-        val gson = Gson()
-        return gson.toJson(list)
-    }
-
-    @TypeConverter
-    fun moviesFromString(value: String?): ArrayList<Movie> {
-        val listType: Type = object : TypeToken<ArrayList<Movie?>?>() {}.type
-        return Gson().fromJson(value, listType)
-    }
-
-    @TypeConverter
-    fun moviesToString(list: ArrayList<Movie?>?): String {
         val gson = Gson()
         return gson.toJson(list)
     }
@@ -59,6 +46,18 @@ object Converters {
 
     @TypeConverter
     fun postersToString(list: ArrayList<Posters?>?): String {
+        val gson = Gson()
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun genresIdsFromString(value: String?): ArrayList<Int> {
+        val listType: Type = object : TypeToken<ArrayList<Int?>?>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun genresIdsToString(list: ArrayList<Int?>?): String {
         val gson = Gson()
         return gson.toJson(list)
     }

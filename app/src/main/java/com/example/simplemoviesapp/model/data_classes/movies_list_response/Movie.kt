@@ -15,5 +15,5 @@ data class Movie (
   @ColumnInfo(name = "release_date"     ) @SerializedName("release_date"      ) var releaseDate      : String?        = null,
   @ColumnInfo(name = "title"            ) @SerializedName("title"             ) var title            : String?        = null,
   @ColumnInfo(name = "vote_average"     ) @SerializedName("vote_average"      ) var voteAverage      : Double?        = null,
-
+  @ColumnInfo(name = "genre_ids"        ) @SerializedName("genre_ids"         ) var genreIds         : ArrayList<Int> = arrayListOf()
   )

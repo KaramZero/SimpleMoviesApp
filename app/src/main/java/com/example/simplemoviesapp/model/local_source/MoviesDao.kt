@@ -1,14 +1,17 @@
 package com.example.simplemoviesapp.model.local_source
 
 import androidx.room.*
-import com.example.simplemoviesapp.model.data_classes.genre_response.GenreResponse
-import com.example.simplemoviesapp.model.data_classes.movies_list_response.MoviesListResponse
+import com.example.simplemoviesapp.model.data_classes.movies_list_response.Movie
 
 @Dao
 interface MoviesDao {
-    @Query("SELECT * From moviesListResponse WHERE genre LIKE :genre and page LIKE :page LIMIT 1")
-    fun getMovies(genre: String,page: Int ): MoviesListResponse
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMoviesListResponse(movies: MoviesListResponse?)
+    fun insertMovie(movie: Movie?)
+
+    @Query("SELECT * From movies WHERE genre_ids LIKE :genre LIMIT :start , :end")
+    fun getMovies(genre: String, start: Int, end: Int): List<Movie>
+
+    @Query("SELECT COUNT(*) From movies WHERE genre_ids LIKE :genre ")
+    fun getMoviesCount(genre: String): Int
+
 }

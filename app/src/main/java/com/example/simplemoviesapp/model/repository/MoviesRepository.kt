@@ -1,6 +1,7 @@
 package com.example.simplemoviesapp.model.repository
 
 
+import com.example.simplemoviesapp.model.data_classes.movies_list_response.Movie
 import com.example.simplemoviesapp.model.data_classes.movies_list_response.MoviesListResponse
 import com.example.simplemoviesapp.model.local_source.MoviesDao
 import com.example.simplemoviesapp.model.network.DiscoverMoviesApiServices
@@ -27,10 +28,9 @@ class MoviesRepository @Inject constructor(
         var res: MoviesListResponse?
         try {
             res = api.getMovies(genres, page, NetworkKeys.language, NetworkKeys.headers)
-            res.genre = genres.ifEmpty { "ALL" }
             insertMoviesListResponse(res)
         } catch (ex: Exception) {
-            res = getMoviesFromDB(genres.ifEmpty { "ALL" }, page)
+            res = getMoviesFromDB(genres, page)
         }
 
         if (res == null)
@@ -45,7 +45,9 @@ class MoviesRepository @Inject constructor(
      */
     private fun insertMoviesListResponse(movies: MoviesListResponse) {
         Thread {
-            moviesDao.insertMoviesListResponse(movies)
+            for (movie in movies.results)
+                moviesDao.insertMovie(movie)
+
         }.start()
     }
 
@@ -55,6 +57,15 @@ class MoviesRepository @Inject constructor(
      * get the Movies List from the DataBases.
      */
     private fun getMoviesFromDB(genres: String, page: Int): MoviesListResponse {
-        return moviesDao.getMovies(genre = genres, page = page)
+        val itemsPerPage = 6
+        val res = MoviesListResponse()
+
+        res.results = moviesDao.getMovies("%$genres%", start = (page - 1)*itemsPerPage, end = itemsPerPage) as ArrayList<Movie>
+        val resultsCount = moviesDao.getMoviesCount("%$genres%")
+
+        res.totalResults = resultsCount
+        res.totalPages = resultsCount / itemsPerPage
+
+        return res
     }
 }

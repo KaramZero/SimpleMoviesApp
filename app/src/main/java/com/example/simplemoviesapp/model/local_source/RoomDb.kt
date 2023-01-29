@@ -8,10 +8,9 @@ import com.example.simplemoviesapp.model.data_classes.genre_response.GenreRespon
 import com.example.simplemoviesapp.model.data_classes.movie_credits_response.MovieCreditsResponse
 import com.example.simplemoviesapp.model.data_classes.movie_images_response.MovieImagesResponse
 import com.example.simplemoviesapp.model.data_classes.movies_list_response.Movie
-import com.example.simplemoviesapp.model.data_classes.movies_list_response.MoviesListResponse
 
 @Database(
-    entities = [GenreResponse::class, MoviesListResponse::class, Movie::class, MovieCreditsResponse::class, MovieImagesResponse::class],
+    entities = [GenreResponse::class, Movie::class, MovieCreditsResponse::class, MovieImagesResponse::class],
     version = 1
 )
 @TypeConverters(Converters::class)
