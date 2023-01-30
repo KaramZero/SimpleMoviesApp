@@ -22,7 +22,7 @@ class SearchMoviesViewModel @Inject constructor(
     private val debugTAG by lazy { this.javaClass.name }
 
 
-    private var totalPages = 0
+    private var totalPages = 0L
     private var nextPage = 1
 
     private val _status = MutableLiveData<Status?>()

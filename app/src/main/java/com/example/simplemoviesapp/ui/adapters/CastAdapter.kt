@@ -1,4 +1,4 @@
-package com.example.simplemoviesapp.ui.movies_list.adapters
+package com.example.simplemoviesapp.ui.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,27 +8,24 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.simplemoviesapp.R
-import com.example.simplemoviesapp.databinding.MovieRowItemBinding
-import com.example.simplemoviesapp.model.data_classes.movies_list_response.Movie
+import com.example.simplemoviesapp.databinding.CastRowItemBinding
+import com.example.simplemoviesapp.model.data_classes.movie_credits_response.Cast
 import com.example.simplemoviesapp.model.network.NetworkKeys
-import com.example.simplemoviesapp.ui.movies_list.ListFragmentCommunicator
-import jp.wasabeef.glide.transformations.BlurTransformation
 
 
-class MoviesAdapter constructor(
+class CastAdapter constructor(
     private val context: Context,
-    private val communicator: ListFragmentCommunicator
+    private val communicator: CastListAdapterCommunicator
 ) :
-    ListAdapter<Movie, MoviesAdapter.ViewHolder>(MovieDiffCallback()) {
+    ListAdapter<Cast, CastAdapter.ViewHolder>(CastDiffCallback()) {
 
     private var lastPosition = 0
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
-            MovieRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            CastRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return ViewHolder(binding)
     }
@@ -42,9 +39,13 @@ class MoviesAdapter constructor(
         )
 
         holder.itemView.setOnClickListener {
-            currentItem.id.let { id -> communicator.goToDetails(id) }
+            currentItem.id?.let { id ->
+                communicator.goToMoviesByActorFragment(
+                    actorId = id,
+                    actorName = currentItem.name.toString()
+                )
+            }
         }
-
 
         //for the views Animation, when binding each view.
         if (position >= lastPosition || (position == 0 && lastPosition != 1)) //to check the direction of creating the views(from up/from down).
@@ -62,32 +63,22 @@ class MoviesAdapter constructor(
     }
 
 
-    class ViewHolder(private val binding: MovieRowItemBinding) :
+    class ViewHolder(private val binding: CastRowItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
-            item: Movie,
+            item: Cast,
             context: Context,
         ) {
 
             binding.apply {
 
-                titleTextView.text = item.title
-                productionYearTextView.text = item.releaseDate?.take(4) ?: "0000"
-
-                //show the image on background with BlurTransformation.
+                nameTextView.text = item.name
                 Glide.with(context)
-                    .load("${NetworkKeys.IMAGES_BASE_URL}${item.posterPath}")
-                    .override(1024, 768)
-                    .apply(bitmapTransform(BlurTransformation(25, 3)))
-                    .into(backgroundImageView)
-
-                Glide.with(context)
-                    .load("${NetworkKeys.IMAGES_BASE_URL}${item.posterPath}")
+                    .load("${NetworkKeys.IMAGES_BASE_URL}${item.profilePath}")
                     .override(1024, 768)
                     .placeholder(R.drawable.loading)
-                    .into(movieImageView)
-
+                    .into(actorImageView)
             }
 
         }
@@ -96,13 +87,17 @@ class MoviesAdapter constructor(
 
 }
 
-class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+class CastDiffCallback : DiffUtil.ItemCallback<Cast>() {
+    override fun areItemsTheSame(oldItem: Cast, newItem: Cast): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    override fun areContentsTheSame(oldItem: Cast, newItem: Cast): Boolean {
         return oldItem == newItem
     }
 
+}
+
+interface CastListAdapterCommunicator {
+    fun goToMoviesByActorFragment(actorId: Long, actorName: String)
 }

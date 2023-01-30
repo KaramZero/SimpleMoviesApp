@@ -12,6 +12,6 @@ interface MoviesDao {
     fun getMovies(genre: String, start: Int, end: Int): List<Movie>
 
     @Query("SELECT COUNT(*) From movies WHERE genre_ids LIKE :genre ")
-    fun getMoviesCount(genre: String): Int
+    fun getMoviesCount(genre: String): Long
 
 }

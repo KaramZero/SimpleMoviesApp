@@ -22,7 +22,7 @@ class MoviesListViewModel @Inject constructor(
     private val debugTAG by lazy { this.javaClass.name }
 
 
-    private var totalPages = 0
+    private var totalPages = 0L
     private var nextPage = 1
 
     private val _status = MutableLiveData<Status?>()
@@ -31,7 +31,7 @@ class MoviesListViewModel @Inject constructor(
     private val _movies = MutableLiveData<ArrayList<Movie>>()
     val movies: LiveData<ArrayList<Movie>> = _movies
 
-    fun getMovies(genreId: Int) {
+    fun getMovies(genreId: Long) {
         totalPages = 0
         nextPage = 1
         viewModelScope.launch(Dispatchers.IO) {
@@ -39,7 +39,7 @@ class MoviesListViewModel @Inject constructor(
                 _status.postValue(Status.LOADING)
 
                 val res =
-                    if (genreId == 0)
+                    if (genreId == 0L)
                         moviesRepository.getMovies(page = nextPage)
                     else
                         moviesRepository.getMovies(genreId.toString(), nextPage)
@@ -59,14 +59,14 @@ class MoviesListViewModel @Inject constructor(
     }
 
 
-    fun getNextMovies(genreId: Int) {
+    fun getNextMovies(genreId: Long) {
         if (nextPage < totalPages) {
             nextPage++
 
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val res =
-                        if (genreId == 0)
+                        if (genreId == 0L)
                             moviesRepository.getMovies(page = nextPage)
                         else
                             moviesRepository.getMovies(genreId.toString(), nextPage)

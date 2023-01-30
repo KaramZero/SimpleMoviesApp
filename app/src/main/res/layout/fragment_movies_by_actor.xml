@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.movies_by_actor.MoviesByActorFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#CCFFFFFF"
+        android:elevation="15dp" />
+
+
+    <include
+        android:id="@+id/movies_list_layout"
+        layout="@layout/fragment_movies_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp" />
+
+    <include
+        android:id="@+id/warning_layout"
+        layout="@layout/warning_layout" />
+
+</LinearLayout>

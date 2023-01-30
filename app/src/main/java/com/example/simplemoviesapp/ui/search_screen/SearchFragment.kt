@@ -13,14 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simplemoviesapp.R
 import com.example.simplemoviesapp.databinding.FragmentSearchBinding
 import com.example.simplemoviesapp.model.data_classes.Status
-import com.example.simplemoviesapp.ui.movies_list.ListFragmentCommunicator
-import com.example.simplemoviesapp.ui.movies_list.adapters.MoviesAdapter
+import com.example.simplemoviesapp.ui.adapters.MoviesAdapter
+import com.example.simplemoviesapp.ui.adapters.MoviesListAdapterCommunicator
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class SearchFragment : Fragment(), ListFragmentCommunicator {
+class SearchFragment : Fragment(), MoviesListAdapterCommunicator {
 
     private val viewModel: SearchMoviesViewModel by viewModels()
 
@@ -154,10 +154,10 @@ class SearchFragment : Fragment(), ListFragmentCommunicator {
         }
     }
 
-    override fun goToDetails(movieId: Int) {
+    override fun goToDetails(movieId: Long) {
         findNavController().navigate(
             SearchFragmentDirections.actionSearchFragmentToDetailsFragment(
-                movieId
+                movieId.toString()
             )
         )
     }

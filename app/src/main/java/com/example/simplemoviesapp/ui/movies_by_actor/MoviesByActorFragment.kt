@@ -1,4 +1,4 @@
-package com.example.simplemoviesapp.ui.movies_list
+package com.example.simplemoviesapp.ui.movies_by_actor
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,47 +8,37 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.simplemoviesapp.R
-import com.example.simplemoviesapp.databinding.FragmentMoviesListBinding
+import com.example.simplemoviesapp.databinding.FragmentMoviesByActorBinding
 import com.example.simplemoviesapp.model.data_classes.Status
 import com.example.simplemoviesapp.model.data_classes.movies_list_response.Movie
-import com.example.simplemoviesapp.ui.home.HomeFragmentDirections
 import com.example.simplemoviesapp.ui.adapters.MoviesAdapter
 import com.example.simplemoviesapp.ui.adapters.MoviesListAdapterCommunicator
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
-class MoviesListFragment : Fragment(), MoviesListAdapterCommunicator {
+class MoviesByActorFragment : Fragment(), MoviesListAdapterCommunicator {
 
-    private val viewModel: MoviesListViewModel by viewModels()
-
+    private val viewModel: MoviesByActorViewModel by viewModels()
     private lateinit var moviesAdapter: MoviesAdapter
+    private var actorId = ""
+    private var actorName = ""
 
-    private var genreId = 0L
-    private var _binding: FragmentMoviesListBinding? = null
+
+    private var _binding: FragmentMoviesByActorBinding? = null
     private val binding get() = _binding!!
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-        //getting the genre id from arguments and calling the viewModel to get MoviesList with it.
-        arguments?.takeIf { it.containsKey("genre_id") }?.apply {
-            val genreId = getLong("genre_id")
-            this@MoviesListFragment.genreId = genreId
-            viewModel.getMovies(genreId = genreId)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentMoviesListBinding.inflate(inflater, container, false)
+        _binding = FragmentMoviesByActorBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -57,12 +47,23 @@ class MoviesListFragment : Fragment(), MoviesListAdapterCommunicator {
         _binding = null
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        actorId = MoviesByActorFragmentArgs.fromBundle(requireArguments()).actorID
+        actorName = MoviesByActorFragmentArgs.fromBundle(requireArguments()).actorName
+
+        viewModel.getMoviesByActor(actorId)
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        createToolBar()
+
         moviesAdapter = MoviesAdapter(requireContext(), this)
 
-        binding.moviesRecycleView.adapter = moviesAdapter
-        binding.moviesRecycleView.addOnScrollListener(recycleViewListener)
+        binding.moviesListLayout.moviesRecycleView.adapter = moviesAdapter
 
         viewModel.apply {
             movies.observe(viewLifecycleOwner) {
@@ -75,13 +76,14 @@ class MoviesListFragment : Fragment(), MoviesListAdapterCommunicator {
             }
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getMovies(genreId)
-            binding.swipeRefresh.isRefreshing = false
+
+        binding.moviesListLayout.swipeRefresh.setOnRefreshListener {
+            viewModel.getMoviesByActor(actorId)
+            binding.moviesListLayout.swipeRefresh.isRefreshing = false
         }
 
         binding.warningLayout.loadAgainButton.setOnClickListener {
-            viewModel.getMovies(genreId)
+            viewModel.getMoviesByActor(actorId)
             it.isEnabled =
                 false //prevents clicking on the button before the last call is finished. it is enabled again on error happens.
         }
@@ -89,16 +91,14 @@ class MoviesListFragment : Fragment(), MoviesListAdapterCommunicator {
     }
 
     /**
-     * listener on scrolling in recycleView
-     * when it reaches the end of the list it calls the viewModel to get the next page
+     * it creates a ToolBar and setupWithNavController.
+     * and set its title to loading..
      */
-    private val recycleViewListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-
-            if (!recyclerView.canScrollVertically(1)) {
-                viewModel.getNextMovies(genreId)
-            }
+    private fun createToolBar() {
+        val appBarConfiguration = AppBarConfiguration(findNavController().graph)
+        binding.toolbar.apply {
+            setupWithNavController(findNavController(), appBarConfiguration)
+            title = actorName //getString(R.string.loading)
         }
     }
 
@@ -112,12 +112,12 @@ class MoviesListFragment : Fragment(), MoviesListAdapterCommunicator {
         if (movies.isEmpty()) {
             binding.warningLayout.root.visibility = View.VISIBLE
             binding.warningLayout.loadAgainButton.isEnabled = true
-            binding.moviesRecycleView.visibility = View.GONE
+            binding.moviesListLayout.moviesRecycleView.visibility = View.GONE
 
         } else {
             binding.warningLayout.root.visibility = View.GONE
             binding.warningLayout.loadAgainButton.isEnabled = true
-            binding.moviesRecycleView.visibility = View.VISIBLE
+            binding.moviesListLayout.moviesRecycleView.visibility = View.VISIBLE
 
             moviesAdapter.submitList(movies.toList())
         }
@@ -130,7 +130,7 @@ class MoviesListFragment : Fragment(), MoviesListAdapterCommunicator {
     private fun handleNetworkStatus(it: Status?) {
         when (it) {
             Status.LOADING -> {
-                binding.progressBar.visibility = View.VISIBLE
+                binding.moviesListLayout.progressBar.visibility = View.VISIBLE
             }
             Status.ERROR -> {
                 Snackbar.make(
@@ -138,10 +138,10 @@ class MoviesListFragment : Fragment(), MoviesListAdapterCommunicator {
                     getString(R.string.error_happened),
                     Toast.LENGTH_SHORT
                 ).show()
-                binding.progressBar.visibility = View.GONE
+                binding.moviesListLayout.progressBar.visibility = View.GONE
             }
             Status.DONE -> {
-                binding.progressBar.visibility = View.GONE
+                binding.moviesListLayout.progressBar.visibility = View.GONE
             }
             null -> {}
         }
@@ -149,7 +149,7 @@ class MoviesListFragment : Fragment(), MoviesListAdapterCommunicator {
 
     override fun goToDetails(movieId: Long) {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToDetailsFragment(
+            MoviesByActorFragmentDirections.actionMoviesByActorFragmentToDetailsFragment(
                 movieId.toString()
             )
         )

@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "MovieCreditsResponse", primaryKeys = ["id"])
 data class MovieCreditsResponse (
 
-  @ColumnInfo(name = "id"               ) @SerializedName("id"   ) var id   : Int             = 0,
+  @ColumnInfo(name = "id"               ) @SerializedName("id"   ) var id   : Long            = 0,
   @ColumnInfo(name = "cast"             ) @SerializedName("cast" ) var cast : ArrayList<Cast> = arrayListOf()
 )

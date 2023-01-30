@@ -21,7 +21,8 @@ import com.example.simplemoviesapp.model.data_classes.Status
 import com.example.simplemoviesapp.model.data_classes.movie_credits_response.Cast
 import com.example.simplemoviesapp.model.data_classes.movies_list_response.Movie
 import com.example.simplemoviesapp.model.network.NetworkKeys
-import com.example.simplemoviesapp.ui.movie_details.adapters.CastAdapter
+import com.example.simplemoviesapp.ui.adapters.CastAdapter
+import com.example.simplemoviesapp.ui.adapters.CastListAdapterCommunicator
 import com.example.simplemoviesapp.ui.movie_details.adapters.PostersSwipePagerAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +30,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 
 
 @AndroidEntryPoint
-class DetailsFragment : Fragment() {
+class DetailsFragment : Fragment(), CastListAdapterCommunicator {
     private val viewModel: MovieDetailsViewModel by viewModels()
 
     //used for view pager images switching with buttons.
@@ -58,8 +59,7 @@ class DetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        movieId = DetailsFragmentArgs.fromBundle(requireArguments()).movieId.toString()
-        viewModel.loadMovieData(movieId)
+        movieId = DetailsFragmentArgs.fromBundle(requireArguments()).movieId
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,6 +68,8 @@ class DetailsFragment : Fragment() {
         createToolBar()
 
         handleImageSwitcher()
+
+        viewModel.loadMovieData(movieId)
 
         //add observers to viewModel LiveData variables
         viewModel.apply {
@@ -125,7 +127,7 @@ class DetailsFragment : Fragment() {
      * it creates a CastAdapter with that list and attach it to the castRecycleView
      */
     private fun handleMovieCast(cast: ArrayList<Cast>?) {
-        val adapter = CastAdapter(requireContext())
+        val adapter = CastAdapter(requireContext(),this)
         adapter.submitList(cast)
         binding.castRecycleView.adapter = adapter
     }
@@ -219,6 +221,15 @@ class DetailsFragment : Fragment() {
             if (currentIndex >= imagesCount) currentIndex = 0
             binding.pager.setCurrentItem(currentIndex, true)
         }
+    }
+
+    override fun goToMoviesByActorFragment(actorId: Long, actorName: String) {
+        findNavController().navigate(
+            DetailsFragmentDirections.actionDetailsFragmentToMoviesByActorFragment(
+                actorId.toString(),
+                actorName
+            )
+        )
     }
 
 }

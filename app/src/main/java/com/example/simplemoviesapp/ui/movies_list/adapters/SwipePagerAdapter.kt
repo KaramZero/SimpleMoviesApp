@@ -30,7 +30,7 @@ class SwipePagerAdapter(manager: FragmentManager, lifecycle: Lifecycle) : Fragme
             if (position == 0)
                 putInt("genre_id", 0)
             else
-                genres[position-1].id?.let { putInt("genre_id", it) }
+                genres[position-1].id?.let { putLong("genre_id", it) }
         }
         return fragment
     }

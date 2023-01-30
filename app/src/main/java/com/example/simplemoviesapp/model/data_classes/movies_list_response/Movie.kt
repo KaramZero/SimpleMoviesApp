@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class Movie (
 
   @ColumnInfo(name = "backdrop_path"    ) @SerializedName("backdrop_path"     ) var backdropPath     : String?        = null,
-  @ColumnInfo(name = "id"               ) @SerializedName("id"                ) var id               : Int            = 0,
+  @ColumnInfo(name = "id"               ) @SerializedName("id"                ) var id               : Long           = 0,
   @ColumnInfo(name = "original_title"   ) @SerializedName("original_title"    ) var originalTitle    : String?        = null,
   @ColumnInfo(name = "overview"         ) @SerializedName("overview"          ) var overview         : String?        = null,
   @ColumnInfo(name = "poster_path"      ) @SerializedName("poster_path"       ) var posterPath       : String?        = null,

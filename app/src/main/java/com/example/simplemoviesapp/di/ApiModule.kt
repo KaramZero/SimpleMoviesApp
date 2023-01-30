@@ -1,9 +1,6 @@
 package com.example.simplemoviesapp.di
 
-import com.example.simplemoviesapp.model.network.DiscoverMoviesApiServices
-import com.example.simplemoviesapp.model.network.GenreListApiServices
-import com.example.simplemoviesapp.model.network.MovieDetailsApiServices
-import com.example.simplemoviesapp.model.network.SearchMoviesApiServices
+import com.example.simplemoviesapp.model.network.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,4 +32,9 @@ object ApiModule {
     @Provides
     fun provideSearchMoviesApiServices(retrofit: Retrofit): SearchMoviesApiServices =
         retrofit.create(SearchMoviesApiServices::class.java)
+
+    @Singleton
+    @Provides
+    fun provideMoviesByActorApiServices(retrofit: Retrofit): MoviesByActorApiServices =
+        retrofit.create(MoviesByActorApiServices::class.java)
 }

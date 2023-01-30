@@ -6,11 +6,6 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/moviesListFragment"
-        android:name="com.example.simplemoviesapp.ui.movies_list.MoviesListFragment"
-        android:label="fragment_movies_list"
-        tools:layout="@layout/fragment_movies_list" />
-    <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.simplemoviesapp.ui.home.HomeFragment"
         android:label="fragment_home"
@@ -29,7 +24,10 @@
         tools:layout="@layout/fragment_details" >
         <argument
             android:name="movieId"
-            app:argType="integer" />
+            app:argType="string" />
+        <action
+            android:id="@+id/action_detailsFragment_to_moviesByActorFragment"
+            app:destination="@id/moviesByActorFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -42,5 +40,20 @@
         <action
             android:id="@+id/action_searchFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/moviesByActorFragment"
+        android:name="com.example.simplemoviesapp.ui.movies_by_actor.MoviesByActorFragment"
+        android:label="fragment_movies_by_actor"
+        tools:layout="@layout/fragment_movies_by_actor" >
+        <argument
+            android:name="actorID"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_moviesByActorFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+        <argument
+            android:name="actorName"
+            app:argType="string" />
     </fragment>
 </navigation>
